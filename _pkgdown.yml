@@ -1,0 +1,55 @@
+url: https://taakefyrsten.github.io/tidysoiltexture
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: "tidysoiltexture — Soil texture classification and visualisation"
+  description: >
+    Tidy tools for USDA soil texture classification and ggplot2-based texture
+    triangle plots. Pipe-compatible, tibble-in/tibble-out, with S3 dispatch
+    for sf point objects and terra SpatRaster stacks.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [github]
+  components:
+    intro:
+      text: "Get started"
+      href: articles/classify-texture.html
+    github:
+      icon: fab fa-github
+      href: https://github.com/Taakefyrsten/tidysoiltexture
+      aria-label: GitHub
+
+reference:
+  - title: "Classification"
+    desc: "Classify sand/silt/clay fractions to USDA texture classes"
+    contents:
+      - classify_texture
+  - title: "Visualisation"
+    desc: "Build ggplot2-based texture triangle plots"
+    contents:
+      - gg_texture_triangle
+      - texture_surface
+      - geom_texture_contour
+      - texture_label_style
+  - title: "Data"
+    desc: "Built-in reference data"
+    contents:
+      - usda_texture_classes
+
+articles:
+  - title: "Tutorials"
+    navbar: "Tutorials"
+    contents:
+      - classify-texture
+      - gg-texture-triangle
+      - gis-workflow
+
+news:
+  releases:
+    - text: "tidysoiltexture 1.0.0"
+      href: news/index.html

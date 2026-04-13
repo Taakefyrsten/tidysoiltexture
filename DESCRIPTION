@@ -1,0 +1,39 @@
+Package: tidysoiltexture
+Title: Tidy Tools for Soil Texture Classification and Visualisation
+Version: 1.0.0
+Authors@R:
+    person("Einar", "Taakefyrsten", , "einaremil1999@gmail.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = ""))
+Description: A tidy reimagining of soil texture classification and
+    visualisation. Provides pipe-compatible functions that accept and return
+    tibbles, with tidy evaluation support for sand, silt, and clay column
+    arguments. Implements texture classification according to the USDA system,
+    and produces ggplot2-based soil texture triangle plots with sample points,
+    continuous fill surfaces, and contour layers. Spatial dispatch methods
+    support sf point objects and terra SpatRaster stacks directly.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    cli,
+    dplyr,
+    ggplot2,
+    rlang,
+    tibble
+Suggests:
+    knitr,
+    pkgdown,
+    rmarkdown,
+    sf,
+    terra,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+LazyData: true
+URL: https://taakefyrsten.github.io/tidysoiltexture,
+    https://github.com/Taakefyrsten/tidysoiltexture
+BugReports: https://github.com/Taakefyrsten/tidysoiltexture/issues

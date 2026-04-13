@@ -1,0 +1,256 @@
+---
+title: "Classifying soil texture with classify_texture()"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Classifying soil texture with classify_texture()}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+```{r packages, message=FALSE}
+library(tidysoiltexture)
+library(dplyr)
+library(tibble)
+```
+
+## Overview
+
+`classify_texture()` assigns USDA texture classes (sand, loam, clay, etc.) to
+soil samples based on their sand, silt, and clay fractions. It is an S3
+generic with three dispatch methods:
+
+| Input type | What it dispatches to |
+|------------|----------------------|
+| Data frame / tibble | `classify_texture.default()` |
+| `sf` point object | `classify_texture.sf()` |
+| `terra` SpatRaster | `classify_texture.SpatRaster()` |
+
+All methods accept and return tibbles (or the spatial equivalent), and all
+support tidy evaluation — you can pass bare column names or string names
+interchangeably.
+
+---
+
+## 1. Basic usage
+
+```{r basic}
+soils <- tribble(
+  ~sample_id, ~sand, ~silt, ~clay,
+  "A1",          65,    20,    15,
+  "A2",          20,    50,    30,
+  "A3",           8,    72,    20,
+  "A4",          40,    38,    22,
+  "A5",          52,     6,    42,
+  "A6",           6,    47,    47
+)
+
+classify_texture(soils, sand, silt, clay)
+```
+
+Two columns are appended to the input tibble:
+
+* `.texture_class` — full USDA class name
+* `.texture_abbr` — standard abbreviation (e.g. `SaLo`, `Cl`)
+
+---
+
+## 2. Tidy evaluation
+
+Column names can be passed as bare symbols or as string-named columns.
+The function uses `rlang::enquo()` internally so it integrates naturally
+into dplyr pipelines.
+
+```{r tidyeval-pipeline}
+# Works inside a pipe with renamed columns
+soils |>
+  rename(s = sand, si = silt, c = clay) |>
+  classify_texture(sand = s, silt = si, clay = c)
+```
+
+Scalar values also work for any argument — useful for constant fractions
+across a dataset:
+
+```{r scalar-args}
+# All samples have the same silt (25%); sand and clay vary
+tibble(sand = c(60, 40, 15), clay = c(15, 35, 60)) |>
+  classify_texture(sand = sand, silt = 25, clay = clay)
+```
+
+---
+
+## 3. Validation
+
+`classify_texture()` validates that the three fractions sum to 100 (within
+a tolerance of ± 0.5). Rows that don't sum correctly raise an error.
+
+```{r validation, error=TRUE}
+# Bad row: fractions sum to 95
+tibble(sand = 50, silt = 30, clay = 15) |>
+  classify_texture(sand, silt, clay)
+```
+
+---
+
+## 4. The 12 USDA texture classes
+
+`usda_texture_classes` contains the polygon boundary data used internally.
+
+```{r usda-data}
+usda_texture_classes |>
+  distinct(class, abbr) |>
+  arrange(class)
+```
+
+A helper lookup table of the 12 classes with representative centroids:
+
+```{r centroids}
+tribble(
+  ~Class,            ~Abbr,     ~Sand, ~Silt, ~Clay,
+  "sand",            "Sa",         92,     5,     3,
+  "loamy sand",      "LoSa",       80,    12,     8,
+  "sandy loam",      "SaLo",       65,    22,    13,
+  "loam",            "Lo",         41,    39,    20,
+  "silty loam",      "SiLo",       20,    65,    15,
+  "silt",            "Si",          7,    85,     8,
+  "sandy clay loam", "SaClLo",     60,    13,    27,
+  "clay loam",       "ClLo",       32,    34,    34,
+  "silty clay loam", "SiClLo",     10,    56,    34,
+  "sandy clay",      "SaCl",       52,     6,    42,
+  "silty clay",      "SiCl",        6,    47,    47,
+  "clay",            "Cl",         20,    20,    60
+) |>
+  classify_texture(Sand, Silt, Clay) |>
+  select(Class, Abbr, .texture_class, .texture_abbr)
+```
+
+All 12 centroids classify correctly — the `.texture_class` column matches
+the `Class` column.
+
+---
+
+## 5. Batch classification and performance
+
+The vectorised backend processes all N points per class simultaneously,
+not row by row. This makes it practical for large datasets.
+
+```{r performance}
+set.seed(5519)
+big <- tibble(
+  sand = runif(10000, 5, 85),
+  clay = runif(10000, 5, 45)
+) |>
+  mutate(silt = 100 - sand - clay) |>
+  filter(silt >= 2) |>
+  slice_head(n = 10000)
+
+elapsed <- system.time(
+  result <- classify_texture(big, sand, silt, clay)
+)["elapsed"]
+
+cat(sprintf("10 000 samples in %.3f s\n", elapsed))
+cat(sprintf("NAs: %d\n", sum(is.na(result$.texture_class))))
+```
+
+---
+
+## 6. sf dispatch
+
+If your data is an `sf` point object, `classify_texture()` detects the class
+and dispatches to the `.sf` method. Geometry is preserved.
+
+```{r sf-dispatch, eval=requireNamespace("sf", quietly=TRUE)}
+library(sf)
+
+pts_sf <- st_as_sf(
+  soils,
+  coords = c("sand", "silt"),   # using sand/silt as dummy coordinates
+  crs    = NA_crs_
+)
+pts_sf$sand <- soils$sand
+pts_sf$silt <- soils$silt
+pts_sf$clay <- soils$clay
+
+out_sf <- classify_texture(pts_sf, sand = sand, silt = silt, clay = clay)
+class(out_sf)         # still an sf object
+names(out_sf)         # .texture_class and .texture_abbr appended
+```
+
+```{r sf-skip, eval=!requireNamespace("sf", quietly=TRUE), echo=FALSE}
+message("sf not installed — skipping Section 6.")
+```
+
+---
+
+## 7. SpatRaster dispatch
+
+For raster stacks (e.g. from SoilGrids), `classify_texture()` dispatches to
+the `.SpatRaster` method and returns a categorical raster with 12 levels.
+
+```{r spatraster-dispatch, eval=requireNamespace("terra", quietly=TRUE)}
+library(terra)
+
+# Build a small 10×10 test raster
+r <- rast(ncols = 10, nrows = 10, nlyrs = 3,
+          xmin = 0, xmax = 1, ymin = 0, ymax = 1)
+names(r) <- c("sand", "silt", "clay")
+
+set.seed(7712)
+sand_v <- runif(100, 10, 70)
+clay_v <- runif(100, 5, 40)
+silt_v <- 100 - sand_v - clay_v
+values(r) <- cbind(sand_v, silt_v, clay_v)
+
+r_class <- classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
+print(r_class)
+levels(r_class)[[1]]
+```
+
+```{r spatraster-skip, eval=!requireNamespace("terra", quietly=TRUE), echo=FALSE}
+message("terra not installed — skipping Section 7.")
+```
+
+**SoilGrids note:** SoilGrids stores fractions in g/kg (0–1000). Divide by 10
+before classifying. `classify_texture()` will emit a `cli_warn()` if any value
+exceeds 100, so the error surfaces clearly.
+
+```r
+r_sg <- rast("SoilGrids_sand_silt_clay.tif")   # g/kg layers
+r_class <- classify_texture(r_sg / 10,
+                             sand = "sand", silt = "silt", clay = "clay")
+```
+
+---
+
+## 8. Edge cases: boundary points and vertices
+
+The ray-casting algorithm includes a collinearity check so points that fall
+exactly on class boundaries (shared edges, polygon vertices) are classified
+correctly rather than returning `NA`.
+
+```{r boundary}
+# Clay/silty clay boundary at clay=40%, silt=60%
+boundary_pts <- tribble(
+  ~description,          ~sand, ~silt, ~clay,
+  "clay vertex",             0,    40,    60,
+  "silt/silty clay border",  0,    60,    40,
+  "clay loam centroid",     32,    34,    34
+)
+
+classify_texture(boundary_pts, sand, silt, clay) |>
+  select(description, .texture_class)
+```
+
+---
+
+## See also
+
+* `vignette("gg-texture-triangle")` — visualise classified samples on a
+  texture triangle
+* `vignette("gis-workflow")` — full GIS workflow with sf and terra
