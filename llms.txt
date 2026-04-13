@@ -1,4 +1,4 @@
-# tidysoiltexture ![](reference/figures/logo.png)
+# tidysoiltexture
 
 Tidy tools for **soil texture classification** and **ternary
 visualisation**. Pipe-compatible functions that accept and return

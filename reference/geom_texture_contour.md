@@ -83,4 +83,7 @@ pts <- tibble::tibble(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
 gg_texture_triangle(pts, sand, silt, clay) +
   geom_texture_contour(surf_df, sand, silt, clay, z = p_val,
                        breaks = 0.05, linewidth = 1.4, colour = "red")
+#> Warning: `stat_contour()`: Zero contours were generated
+#> Warning: no non-missing arguments to min; returning Inf
+#> Warning: no non-missing arguments to max; returning -Inf
 ```

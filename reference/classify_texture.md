@@ -64,7 +64,7 @@ classify_texture(
 
 - **SpatRaster**: a single-layer categorical `SpatRaster` named
   `"texture_class"`, with integer cell values mapped to class names via
-  `terra::levels()`.
+  [`terra::levels()`](https://rspatial.github.io/terra/reference/factors.html).
 
 ## Examples
 
@@ -86,14 +86,26 @@ classify_texture(soils, sand = sand, silt = silt, clay = clay)
 
 # --- sf point object -----------------------------------------------------
 if (requireNamespace("sf", quietly = TRUE)) {
-  pts_sf <- sf::st_as_sf(soils, coords = c("lon", "lat"), crs = 4326)
-  pts_sf$sand <- c(70, 20, 40, 10)
-  pts_sf$silt <- c(15, 30, 40, 20)
-  pts_sf$clay <- c(15, 50, 20, 70)
+  pts <- data.frame(
+    sand = c(70, 20, 40, 10),
+    silt = c(15, 30, 40, 20),
+    clay = c(15, 50, 20, 70),
+    lon  = c(10.1, 10.2, 10.3, 10.4),
+    lat  = c(59.1, 59.2, 59.3, 59.4)
+  )
+  pts_sf <- sf::st_as_sf(pts, coords = c("lon", "lat"), crs = 4326)
   classify_texture(pts_sf, sand = sand, silt = silt, clay = clay)
 }
-#> Error in x[coords]: Can't subset columns that don't exist.
-#> ✖ Columns `lon` and `lat` don't exist.
+#> Simple feature collection with 4 features and 5 fields
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: 10.1 ymin: 59.1 xmax: 10.4 ymax: 59.4
+#> Geodetic CRS:  WGS 84
+#>   sand silt clay          geometry .texture_class .texture_abbr
+#> 1   70   15   15 POINT (10.1 59.1)     sandy loam          SaLo
+#> 2   20   30   50 POINT (10.2 59.2)           clay            Cl
+#> 3   40   40   20 POINT (10.3 59.3)           loam            Lo
+#> 4   10   20   70 POINT (10.4 59.4)           clay            Cl
 
 # --- terra SpatRaster stack ----------------------------------------------
 if (requireNamespace("terra", quietly = TRUE)) {
@@ -106,4 +118,6 @@ if (requireNamespace("terra", quietly = TRUE)) {
   )
   classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
 }
+#> Error in check_texture_sums(sand_v, silt_v, clay_v): Sand, silt, and clay must sum to 100 for every row.
+#> ✖ Found 96 row(s) where the sum differs from 100 by more than 1.
 ```

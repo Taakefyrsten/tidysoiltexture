@@ -13,11 +13,11 @@ assigns USDA texture classes (sand, loam, clay, etc.) to soil samples
 based on their sand, silt, and clay fractions. It is an S3 generic with
 three dispatch methods:
 
-| Input type | What it dispatches to |
-|----|----|
-| Data frame / tibble | [`classify_texture.default()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md) |
-| `sf` point object | [`classify_texture.sf()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md) |
-| `terra` SpatRaster | [`classify_texture.SpatRaster()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md) |
+| Input type          | What it dispatches to                                                                                           |
+|---------------------|-----------------------------------------------------------------------------------------------------------------|
+| Data frame / tibble | [`classify_texture.default()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md)    |
+| `sf` point object   | [`classify_texture.sf()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md)         |
+| `terra` SpatRaster  | [`classify_texture.SpatRaster()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md) |
 
 All methods accept and return tibbles (or the spatial equivalent), and
 all support tidy evaluation — you can pass bare column names or string
@@ -202,7 +202,7 @@ elapsed <- system.time(
 )["elapsed"]
 
 cat(sprintf("10 000 samples in %.3f s\n", elapsed))
-#> 10 000 samples in 0.016 s
+#> 10 000 samples in 0.024 s
 cat(sprintf("NAs: %d\n", sum(is.na(result$.texture_class))))
 #> NAs: 0
 ```
@@ -218,7 +218,7 @@ preserved.
 
 ``` r
 library(sf)
-#> Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.0; sf_use_s2() is TRUE
+#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
 
 pts_sf <- st_as_sf(
   soils,
@@ -248,6 +248,7 @@ with 12 levels.
 
 ``` r
 library(terra)
+#> terra 1.9.11
 
 # Build a small 10×10 test raster
 r <- rast(ncols = 10, nrows = 10, nlyrs = 3,
@@ -262,10 +263,31 @@ values(r) <- cbind(sand_v, silt_v, clay_v)
 
 r_class <- classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
 print(r_class)
+#> class       : SpatRaster 
+#> size        : 10, 10, 1  (nrow, ncol, nlyr)
+#> resolution  : 0.1, 0.1  (x, y)
+#> extent      : 0, 1, 0, 1  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> source(s)   : memory
+#> categories  : texture_class 
+#> name        : texture_class 
+#> min value   :    sandy clay 
+#> max value   :    sandy loam
 levels(r_class)[[1]]
+#>    id   texture_class
+#> 1   1            clay
+#> 2   2      silty clay
+#> 3   3      sandy clay
+#> 4   4       clay loam
+#> 5   5 silty clay loam
+#> 6   6 sandy clay loam
+#> 7   7            loam
+#> 8   8      silty loam
+#> 9   9      sandy loam
+#> 10 10            silt
+#> 11 11      loamy sand
+#> 12 12            sand
 ```
-
-    #> terra not installed — skipping Section 7.
 
 **SoilGrids note:** SoilGrids stores fractions in g/kg (0–1000). Divide
 by 10 before classifying.
