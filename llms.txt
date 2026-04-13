@@ -1,0 +1,121 @@
+# tidysoiltexture ![](reference/figures/logo.png)
+
+Tidy tools for **soil texture classification** and **ternary
+visualisation**. Pipe-compatible functions that accept and return
+tibbles, with tidy evaluation support for sand/silt/clay column
+arguments. Classifies samples to 12 USDA texture classes and plots
+publication-ready texture triangles via ggplot2.
+
+## Installation
+
+``` r
+# Install from GitHub:
+pak::pak("Taakefyrsten/tidysoiltexture")
+```
+
+## Quick start
+
+``` r
+library(tidysoiltexture)
+library(tibble)
+
+soils <- tribble(
+  ~id,   ~sand, ~silt, ~clay,
+  "A",      65,    20,    15,
+  "B",      20,    50,    30,
+  "C",       8,    72,    20,
+  "D",      40,    38,    22
+)
+
+# Classify texture
+classify_texture(soils, sand, silt, clay)
+#> # A tibble: 4 × 6
+#>   id     sand  silt  clay .texture_class .texture_abbr
+#>   <chr> <dbl> <dbl> <dbl> <chr>          <chr>
+#> 1 A        65    20    15  sandy loam     SaLo
+#> 2 B        20    50    30  clay loam      ClLo
+#> 3 C         8    72    20  silty loam     SiLo
+#> 4 D        40    38    22  loam           Lo
+
+# Plot the texture triangle
+gg_texture_triangle(soils, sand, silt, clay, colour = id)
+```
+
+## Spatial workflows
+
+[`classify_texture()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md)
+dispatches automatically on `sf` point objects and `terra` SpatRaster
+stacks — no extra code needed:
+
+``` r
+# sf point object
+library(sf)
+pts_sf <- st_as_sf(soils_with_coords, coords = c("lon", "lat"), crs = 4326)
+classify_texture(pts_sf, sand = sand, silt = silt, clay = clay)
+
+# terra SpatRaster (e.g. from SoilGrids — divide by 10 to convert g/kg to %)
+library(terra)
+r <- rast("soilgrids_sand_silt_clay.tif")
+r_class <- classify_texture(r / 10, sand = "sand", silt = "silt", clay = "clay")
+```
+
+## Performance
+
+| Task                            | Time       |
+|---------------------------------|------------|
+| Classify 10 000 samples         | \< 0.015 s |
+| Classify 1 000 000 raster cells | \< 5 s     |
+
+The vectorised backend iterates over 12 USDA polygon classes, testing
+all N points per class simultaneously — no row-level R loops.
+
+## Learn more
+
+- [`vignette("classify-texture")`](https://taakefyrsten.github.io/tidysoiltexture/articles/classify-texture.md)
+  — all dispatch methods, edge cases, performance
+- [`vignette("gg-texture-triangle")`](https://taakefyrsten.github.io/tidysoiltexture/articles/gg-texture-triangle.md)
+  — full styling reference
+- [`vignette("gis-workflow")`](https://taakefyrsten.github.io/tidysoiltexture/articles/gis-workflow.md)
+  — sf and terra integration
+
+Full documentation: <https://taakefyrsten.github.io/tidysoiltexture>
+
+# Package index
+
+## Classification
+
+Classify sand/silt/clay fractions to USDA texture classes
+
+- [`classify_texture()`](https://taakefyrsten.github.io/tidysoiltexture/reference/classify_texture.md)
+  : Classify soil texture from sand, silt, and clay percentages
+
+## Visualisation
+
+Build ggplot2-based texture triangle plots
+
+- [`gg_texture_triangle()`](https://taakefyrsten.github.io/tidysoiltexture/reference/gg_texture_triangle.md)
+  : Plot a soil texture triangle with sample points
+- [`texture_surface()`](https://taakefyrsten.github.io/tidysoiltexture/reference/texture_surface.md)
+  : Prepare a surface for interpolated rendering on a texture triangle
+- [`geom_texture_contour()`](https://taakefyrsten.github.io/tidysoiltexture/reference/geom_texture_contour.md)
+  : Add iso-contour lines to a texture triangle plot
+- [`texture_label_style()`](https://taakefyrsten.github.io/tidysoiltexture/reference/texture_label_style.md)
+  : Styling options for text elements in the texture triangle
+
+## Data
+
+Built-in reference data
+
+- [`usda_texture_classes`](https://taakefyrsten.github.io/tidysoiltexture/reference/usda_texture_classes.md)
+  : USDA soil texture class polygon vertices
+
+# Articles
+
+### Tutorials
+
+- [Classifying soil texture with
+  classify_texture()](https://taakefyrsten.github.io/tidysoiltexture/articles/classify-texture.md):
+- [gg_texture_triangle: Full API
+  Reference](https://taakefyrsten.github.io/tidysoiltexture/articles/gg-texture-triangle.md):
+- [GIS Workflow: Classifying Raster and Vector Soil
+  Data](https://taakefyrsten.github.io/tidysoiltexture/articles/gis-workflow.md):
