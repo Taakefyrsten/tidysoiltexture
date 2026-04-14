@@ -11,7 +11,7 @@ resolve_arg <- function(quo, data, arg_name) {
   }
   val <- rlang::eval_tidy(quo, data = data)
   if (!is.numeric(val)) {
-    cli::cli_abort(
+    rlang::abort(
       c(
         "{.arg {arg_name}} must be a numeric column name or scalar.",
         "x" = "Got an object of class {.cls {class(val)}}."
@@ -26,7 +26,7 @@ check_texture_sums <- function(sand, silt, clay) {
   totals <- sand + silt + clay
   bad    <- abs(totals - 100) > 1
   if (any(bad)) {
-    cli::cli_abort(
+    rlang::abort(
       c(
         "Sand, silt, and clay must sum to 100 for every row.",
         "x" = "Found {sum(bad)} row(s) where the sum differs from 100 by more than 1."

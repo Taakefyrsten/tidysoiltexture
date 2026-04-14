@@ -66,15 +66,15 @@
 #' @examples
 #' # Generate synthetic data with a property that varies across texture space
 #' set.seed(42)
-#' surf_df <- tibble::tibble(
+#' surf_df <- data.frame(
 #'   sand = runif(60, 5, 90),
-#'   clay = runif(60, 5, 60),
-#'   silt = 100 - sand - clay
+#'   clay = runif(60, 5, 60)
 #' ) |>
+#'   dplyr::mutate(silt = 100 - sand - clay) |>
 #'   dplyr::filter(silt >= 0) |>
 #'   dplyr::mutate(prop = sand * 0.3 + clay * 0.5 + rnorm(dplyr::n(), 0, 5))
 #'
-#' pts <- tibble::tibble(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
+#' pts <- data.frame(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
 #'
 #' gg_texture_triangle(pts, sand, silt, clay,
 #'   surface = texture_surface(surf_df, sand, silt, clay, z = prop)) +
@@ -140,15 +140,15 @@ texture_surface <- function(data, sand, silt, clay, z,
 #'
 #' @examples
 #' set.seed(7)
-#' surf_df <- tibble::tibble(
+#' surf_df <- data.frame(
 #'   sand = runif(80, 5, 90),
-#'   clay = runif(80, 5, 60),
-#'   silt = 100 - sand - clay
+#'   clay = runif(80, 5, 60)
 #' ) |>
+#'   dplyr::mutate(silt = 100 - sand - clay) |>
 #'   dplyr::filter(silt >= 0) |>
 #'   dplyr::mutate(p_val = pnorm(scale(clay)[, 1]))
 #'
-#' pts <- tibble::tibble(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
+#' pts <- data.frame(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
 #'
 #' gg_texture_triangle(pts, sand, silt, clay) +
 #'   geom_texture_contour(surf_df, sand, silt, clay, z = p_val,

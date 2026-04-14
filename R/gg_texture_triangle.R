@@ -61,7 +61,7 @@
 #' @export
 #'
 #' @examples
-#' soils <- tibble::tibble(
+#' soils <- data.frame(
 #'   sand = c(70, 20, 40, 10),
 #'   silt = c(15, 30, 40, 20),
 #'   clay = c(15, 50, 20, 70)
@@ -162,8 +162,8 @@ gg_texture_triangle <- function(data, sand, silt, clay,
   poly_df   <- dplyr::bind_cols(poly_data, poly_xy)
 
   if (!is.null(fill_palette)) {
-    fill_df <- tibble::tibble(class = names(fill_palette),
-                              fill_colour = unname(fill_palette))
+    fill_df <- dplyr::tibble(class = names(fill_palette),
+                             fill_colour = unname(fill_palette))
     poly_df <- dplyr::left_join(poly_df, fill_df, by = "class")
   } else {
     poly_df$fill_colour <- NA_character_
@@ -171,7 +171,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
 
   # --- Sample point data ----------------------------------------------------
   pts_xy <- ternary_to_cartesian(sand_v, silt_v, clay_v)
-  pts_df <- tibble::as_tibble(data)
+  pts_df <- dplyr::as_tibble(data)
   pts_df$.x <- pts_xy$x
   pts_df$.y <- pts_xy$y
 
@@ -201,21 +201,21 @@ gg_texture_triangle <- function(data, sand, silt, clay,
     tick_len <- tick_height
   }
 
-  clay_grid <- tibble::tibble(
+  clay_grid <- dplyr::tibble(
     grp = rep(seq_along(pcts), each = 2),
     p   = rep(pcts, each = 2),
     x   = as.vector(rbind(pcts * 0.5,       1 - pcts * 0.5)),
     y   = as.vector(rbind(pcts * h,          pcts * h))
   )
 
-  sand_grid <- tibble::tibble(
+  sand_grid <- dplyr::tibble(
     grp = rep(seq_along(pcts), each = 2),
     p   = rep(pcts, each = 2),
     x   = as.vector(rbind(1 - pcts,          (1 - pcts) * 0.5)),
     y   = as.vector(rbind(rep(0, length(pcts)), (1 - pcts) * h))
   )
 
-  silt_grid <- tibble::tibble(
+  silt_grid <- dplyr::tibble(
     grp = rep(seq_along(pcts), each = 2),
     p   = rep(pcts, each = 2),
     x   = as.vector(rbind(pcts,               0.5 + pcts * 0.5)),
@@ -229,7 +229,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
   )
 
   # Clay ticks — on left edge (silt=0): outward normal = (-h, 0.5)
-  clay_ticks <- tibble::tibble(
+  clay_ticks <- dplyr::tibble(
     p     = pcts,
     x0    = pcts * 0.5,
     y0    = pcts * h,
@@ -242,7 +242,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
   )
 
   # Sand ticks — on bottom edge (clay=0): outward normal = (0, -1)
-  sand_ticks <- tibble::tibble(
+  sand_ticks <- dplyr::tibble(
     p     = pcts,
     x0    = 1 - pcts,
     y0    = 0,
@@ -255,7 +255,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
   )
 
   # Silt ticks — on right edge (sand=0): outward normal = (h, 0.5)
-  silt_ticks <- tibble::tibble(
+  silt_ticks <- dplyr::tibble(
     p     = pcts,
     x0    = 0.5 + pcts * 0.5,
     y0    = (1 - pcts) * h,
@@ -292,7 +292,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
   sand_ax <- 0.5;                  sand_ay <- -arr_dist
   silt_ax <- 0.75 + arr_dist * h;  silt_ay <- h/2 + arr_dist * 0.5
 
-  axis_arrows_df <- tibble::tibble(
+  axis_arrows_df <- dplyr::tibble(
     x0 = c(clay_ax - arr_half * 0.5,
             sand_ax + arr_half,
             silt_ax - arr_half * 0.5),
@@ -307,7 +307,7 @@ gg_texture_triangle <- function(data, sand, silt, clay,
             silt_ay - arr_half * h)
   )
 
-  axis_labels_df <- tibble::tibble(
+  axis_labels_df <- dplyr::tibble(
     label = c("Clay (%)", "Sand (%)", "Silt (%)"),
     x     = c(0.25 - label_dist * h,  0.5,           0.75 + label_dist * h),
     y     = c(h/2 + label_dist * 0.5, -label_dist,   h/2 + label_dist * 0.5),

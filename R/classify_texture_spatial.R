@@ -108,7 +108,7 @@ classify_texture.SpatRaster <- function(data,
     # than percent (0–100). Catch this before check_texture_sums() so the user
     # gets a clear, actionable message instead of a cryptic "sums ≠ 100" error.
     if (max(sand_v, silt_v, clay_v, na.rm = TRUE) > 100) {
-      cli::cli_warn(c(
+      rlang::warn(c(
         "One or more sand/silt/clay values exceed 100.",
         "i" = "Raster layers from SoilGrids and ESDAC are in {.strong g/kg} \\
                (0\\u20131000), not percent.",

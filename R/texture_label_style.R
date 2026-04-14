@@ -24,7 +24,7 @@
 #' @export
 #'
 #' @examples
-#' soils <- tibble::tibble(
+#' soils <- data.frame(
 #'   sand = c(70, 20, 40),
 #'   silt = c(15, 30, 40),
 #'   clay = c(15, 50, 20)
