@@ -119,5 +119,5 @@ if (requireNamespace("terra", quietly = TRUE)) {
   classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
 }
 #> Error in check_texture_sums(sand_v, silt_v, clay_v): Sand, silt, and clay must sum to 100 for every row.
-#> ✖ Found 96 row(s) where the sum differs from 100 by more than 1.
+#> ✖ Found {sum(bad)} row(s) where the sum differs from 100 by more than 1.
 ```

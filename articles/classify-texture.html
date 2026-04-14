@@ -191,7 +191,7 @@ raise an error.</p>
 <span>  <span class="fu"><a href="../reference/classify_texture.html">classify_texture</a></span><span class="op">(</span><span class="va">sand</span>, <span class="va">silt</span>, <span class="va">clay</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `check_texture_sums()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Sand, silt, and clay must sum to 100 for every row.</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Found 1 row(s) where the sum differs from 100 by more than 1.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Found {sum(bad)} row(s) where the sum differs from 100 by more than 1.</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -278,7 +278,7 @@ datasets.</p>
 <span><span class="op">)</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"10 000 samples in %.3f s\n"</span>, <span class="va">elapsed</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 10 000 samples in 0.026 s</span></span>
+<span><span class="co">#&gt; 10 000 samples in 0.028 s</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"NAs: %d\n"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">.texture_class</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; NAs: 0</span></span></code></pre></div>
 <hr>

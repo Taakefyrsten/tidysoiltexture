@@ -109,7 +109,7 @@ tibble(sand = 50, silt = 30, clay = 15) |>
   classify_texture(sand, silt, clay)
 #> Error in `check_texture_sums()`:
 #> ! Sand, silt, and clay must sum to 100 for every row.
-#> ✖ Found 1 row(s) where the sum differs from 100 by more than 1.
+#> ✖ Found {sum(bad)} row(s) where the sum differs from 100 by more than 1.
 ```
 
 ------------------------------------------------------------------------
@@ -202,7 +202,7 @@ elapsed <- system.time(
 )["elapsed"]
 
 cat(sprintf("10 000 samples in %.3f s\n", elapsed))
-#> 10 000 samples in 0.026 s
+#> 10 000 samples in 0.028 s
 cat(sprintf("NAs: %d\n", sum(is.na(result$.texture_class))))
 #> NAs: 0
 ```
