@@ -14,11 +14,23 @@ home:
 navbar:
   structure:
     left:  [intro, reference, articles, news]
-    right: [github]
+    right: [ecosystem, github]
   components:
     intro:
       text: "Get started"
       href: articles/classify-texture.html
+    ecosystem:
+      text: "TidySoils"
+      menu:
+        - text: "TidySoils ecosystem"
+          href: https://taakefyrsten.github.io/TidySoils
+        - text: "---"
+        - text: "tidysoiltexture"
+          href: https://taakefyrsten.github.io/tidysoiltexture
+        - text: "tidysoilwater"
+          href: https://taakefyrsten.github.io/tidysoilwater
+        - text: "tidysoilinfiltration"
+          href: https://taakefyrsten.github.io/tidysoilinfiltration
     github:
       icon: fab fa-github
       href: https://github.com/Taakefyrsten/tidysoiltexture
@@ -48,6 +60,13 @@ articles:
       - classify-texture
       - gg-texture-triangle
       - gis-workflow
+
+repo:
+  url:
+    home: https://github.com/Taakefyrsten/tidysoiltexture
+    source: https://github.com/Taakefyrsten/tidysoiltexture/blob/main/
+    issue: https://github.com/Taakefyrsten/tidysoiltexture/issues
+    user: https://github.com/
 
 news:
   releases:
