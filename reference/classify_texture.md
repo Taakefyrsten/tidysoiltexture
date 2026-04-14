@@ -70,7 +70,7 @@ classify_texture(
 
 ``` r
 # --- data frame / tibble -------------------------------------------------
-soils <- tibble::tibble(
+soils <- data.frame(
   sand = c(70, 20, 40, 10),
   silt = c(15, 30, 40, 20),
   clay = c(15, 50, 20, 70)
@@ -109,15 +109,25 @@ if (requireNamespace("sf", quietly = TRUE)) {
 
 # --- terra SpatRaster stack ----------------------------------------------
 if (requireNamespace("terra", quietly = TRUE)) {
-  r <- terra::rast(ncols = 10, nrows = 10, nlyrs = 3)
+  set.seed(1)
+  n_cells <- 100L
+  sand_v  <- runif(n_cells, 5, 65)
+  clay_v  <- runif(n_cells, 5, 30)   # sand + clay always < 100
+  silt_v  <- 100 - sand_v - clay_v
+  r <- terra::rast(ncols = 10, nrows = 10, nlyrs = 3,
+                   xmin = 0, xmax = 1, ymin = 0, ymax = 1)
   names(r) <- c("sand", "silt", "clay")
-  terra::values(r) <- c(
-    runif(100, 10, 80),   # sand
-    runif(100, 5,  50),   # silt
-    runif(100, 5,  40)    # clay — will have invalid sums; demo only
-  )
+  terra::values(r) <- cbind(sand_v, silt_v, clay_v)
   classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
 }
-#> Error in check_texture_sums(sand_v, silt_v, clay_v): Sand, silt, and clay must sum to 100 for every row.
-#> ✖ Found {sum(bad)} row(s) where the sum differs from 100 by more than 1.
+#> class       : SpatRaster 
+#> size        : 10, 10, 1  (nrow, ncol, nlyr)
+#> resolution  : 0.1, 0.1  (x, y)
+#> extent      : 0, 1, 0, 1  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (CRS84) (OGC:CRS84) 
+#> source(s)   : memory
+#> categories  : texture_class 
+#> name        : texture_class 
+#> min value   :     clay loam 
+#> max value   :          silt 
 ```

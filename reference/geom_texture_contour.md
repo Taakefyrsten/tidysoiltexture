@@ -70,15 +70,15 @@ boundary at `p = 0.05`).
 
 ``` r
 set.seed(7)
-surf_df <- tibble::tibble(
+surf_df <- data.frame(
   sand = runif(80, 5, 90),
-  clay = runif(80, 5, 60),
-  silt = 100 - sand - clay
+  clay = runif(80, 5, 60)
 ) |>
+  dplyr::mutate(silt = 100 - sand - clay) |>
   dplyr::filter(silt >= 0) |>
   dplyr::mutate(p_val = pnorm(scale(clay)[, 1]))
 
-pts <- tibble::tibble(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
+pts <- data.frame(sand = c(40, 20), silt = c(40, 30), clay = c(20, 50))
 
 gg_texture_triangle(pts, sand, silt, clay) +
   geom_texture_contour(surf_df, sand, silt, clay, z = p_val,

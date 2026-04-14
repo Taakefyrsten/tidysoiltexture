@@ -155,7 +155,7 @@ A `ggplot` object.
 ## Examples
 
 ``` r
-soils <- tibble::tibble(
+soils <- data.frame(
   sand = c(70, 20, 40, 10),
   silt = c(15, 30, 40, 20),
   clay = c(15, 50, 20, 70)

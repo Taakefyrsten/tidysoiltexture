@@ -241,7 +241,7 @@ library(sf)
 # 30 synthetic pedon locations across the study area
 set.seed(3312)
 pedons <- sf::st_as_sf(
-  tibble::tibble(
+  data.frame(
     pedon_id = sprintf("P%02d", 1:30),
     x        = runif(30, 500,  19500),
     y        = runif(30, 500,  19500),
@@ -264,21 +264,29 @@ dplyr::select(pedons_class, pedon_id, sand, silt, clay,
 #> Dimension:     XY
 #> Bounding box:  xmin: 688.112 ymin: 564.7616 xmax: 19440.82 ymax: 19114.22
 #> Projected CRS: WGS 84 / UTM zone 32N
-#> # A tibble: 28 × 7
-#>    pedon_id  sand  silt  clay .texture_class  .texture_abbr
-#>    <chr>    <dbl> <dbl> <dbl> <chr>           <chr>        
-#>  1 P01       13.8  53.7  32.5 silty clay loam SiClLo       
-#>  2 P03       34.2  35.6  30.2 clay loam       ClLo         
-#>  3 P04       40.0  35.8  24.2 loam            Lo           
-#>  4 P05       41.7  34.9  23.4 loam            Lo           
-#>  5 P06       43.6  28.8  27.6 clay loam       ClLo         
-#>  6 P07       28.3  45.0  26.7 loam            Lo           
-#>  7 P08       29.1  60.1  10.8 silty loam      SiLo         
-#>  8 P09       56.0  17.5  26.5 sandy clay loam SaClLo       
-#>  9 P10       41.1  15.9  42.9 clay            Cl           
-#> 10 P11       56.5  23.6  19.9 sandy loam      SaLo         
-#> # ℹ 18 more rows
-#> # ℹ 1 more variable: geometry <POINT [m]>
+#> First 10 features:
+#>    pedon_id     sand     silt     clay  .texture_class .texture_abbr
+#> 1       P01 13.79966 53.74321 32.45713 silty clay loam        SiClLo
+#> 2       P03 34.21141 35.61256 30.17604       clay loam          ClLo
+#> 3       P04 39.99365 35.77536 24.23099            loam            Lo
+#> 4       P05 41.71223 34.87808 23.40969            loam            Lo
+#> 5       P06 43.63271 28.77445 27.59284       clay loam          ClLo
+#> 6       P07 28.33070 44.95369 26.71561            loam            Lo
+#> 7       P08 29.06149 60.11680 10.82171      silty loam          SiLo
+#> 8       P09 55.95232 17.52639 26.52130 sandy clay loam        SaClLo
+#> 9       P10 41.11131 15.93876 42.94993            clay            Cl
+#> 10      P11 56.45101 23.64399 19.90499      sandy loam          SaLo
+#>                     geometry
+#> 1  POINT (11726.89 5593.346)
+#> 2  POINT (19440.82 564.7616)
+#> 3  POINT (12959.51 10929.17)
+#> 4   POINT (5266.86 15578.89)
+#> 5  POINT (16149.65 12674.25)
+#> 6  POINT (19051.39 5952.218)
+#> 7   POINT (13817.07 15952.7)
+#> 8  POINT (6363.966 5221.624)
+#> 9  POINT (8859.882 18599.27)
+#> 10 POINT (18992.33 4753.035)
 ```
 
 ### 2.1 Plot points over the classified raster

@@ -298,7 +298,7 @@ preserving geometry:</p>
 <span><span class="co"># 30 synthetic pedon locations across the study area</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3312</span><span class="op">)</span></span>
 <span><span class="va">pedons</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span></span>
-<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>    pedon_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"P%02d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span>,</span>
 <span>    x        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">500</span>,  <span class="fl">19500</span><span class="op">)</span>,</span>
 <span>    y        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">500</span>,  <span class="fl">19500</span><span class="op">)</span>,</span>
@@ -321,21 +321,29 @@ preserving geometry:</p>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: 688.112 ymin: 564.7616 xmax: 19440.82 ymax: 19114.22</span></span>
 <span><span class="co">#&gt; Projected CRS: WGS 84 / UTM zone 32N</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 28 × 7</span></span></span>
-<span><span class="co">#&gt;    pedon_id  sand  silt  clay .texture_class  .texture_abbr</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P01       13.8  53.7  32.5 silty clay loam SiClLo       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P03       34.2  35.6  30.2 clay loam       ClLo         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P04       40.0  35.8  24.2 loam            Lo           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P05       41.7  34.9  23.4 loam            Lo           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P06       43.6  28.8  27.6 clay loam       ClLo         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P07       28.3  45.0  26.7 loam            Lo           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P08       29.1  60.1  10.8 silty loam      SiLo         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P09       56.0  17.5  26.5 sandy clay loam SaClLo       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P10       41.1  15.9  42.9 clay            Cl           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P11       56.5  23.6  19.9 sandy loam      SaLo         </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 18 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: geometry &lt;POINT [m]&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; First 10 features:</span></span>
+<span><span class="co">#&gt;    pedon_id     sand     silt     clay  .texture_class .texture_abbr</span></span>
+<span><span class="co">#&gt; 1       P01 13.79966 53.74321 32.45713 silty clay loam        SiClLo</span></span>
+<span><span class="co">#&gt; 2       P03 34.21141 35.61256 30.17604       clay loam          ClLo</span></span>
+<span><span class="co">#&gt; 3       P04 39.99365 35.77536 24.23099            loam            Lo</span></span>
+<span><span class="co">#&gt; 4       P05 41.71223 34.87808 23.40969            loam            Lo</span></span>
+<span><span class="co">#&gt; 5       P06 43.63271 28.77445 27.59284       clay loam          ClLo</span></span>
+<span><span class="co">#&gt; 6       P07 28.33070 44.95369 26.71561            loam            Lo</span></span>
+<span><span class="co">#&gt; 7       P08 29.06149 60.11680 10.82171      silty loam          SiLo</span></span>
+<span><span class="co">#&gt; 8       P09 55.95232 17.52639 26.52130 sandy clay loam        SaClLo</span></span>
+<span><span class="co">#&gt; 9       P10 41.11131 15.93876 42.94993            clay            Cl</span></span>
+<span><span class="co">#&gt; 10      P11 56.45101 23.64399 19.90499      sandy loam          SaLo</span></span>
+<span><span class="co">#&gt;                     geometry</span></span>
+<span><span class="co">#&gt; 1  POINT (11726.89 5593.346)</span></span>
+<span><span class="co">#&gt; 2  POINT (19440.82 564.7616)</span></span>
+<span><span class="co">#&gt; 3  POINT (12959.51 10929.17)</span></span>
+<span><span class="co">#&gt; 4   POINT (5266.86 15578.89)</span></span>
+<span><span class="co">#&gt; 5  POINT (16149.65 12674.25)</span></span>
+<span><span class="co">#&gt; 6  POINT (19051.39 5952.218)</span></span>
+<span><span class="co">#&gt; 7   POINT (13817.07 15952.7)</span></span>
+<span><span class="co">#&gt; 8  POINT (6363.966 5221.624)</span></span>
+<span><span class="co">#&gt; 9  POINT (8859.882 18599.27)</span></span>
+<span><span class="co">#&gt; 10 POINT (18992.33 4753.035)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="plot-points-over-the-classified-raster">2.1 Plot points over the classified raster<a class="anchor" aria-label="anchor" href="#plot-points-over-the-classified-raster"></a>
 </h3>

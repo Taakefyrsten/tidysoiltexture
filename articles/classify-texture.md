@@ -202,7 +202,7 @@ elapsed <- system.time(
 )["elapsed"]
 
 cat(sprintf("10 000 samples in %.3f s\n", elapsed))
-#> 10 000 samples in 0.028 s
+#> 10 000 samples in 0.026 s
 cat(sprintf("NAs: %d\n", sum(is.na(result$.texture_class))))
 #> NAs: 0
 ```
