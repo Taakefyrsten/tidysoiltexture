@@ -56,13 +56,15 @@ classify_texture.sf <- function(data, sand, silt, clay,
 #'
 #' # --- terra SpatRaster stack ----------------------------------------------
 #' if (requireNamespace("terra", quietly = TRUE)) {
-#'   r <- terra::rast(ncols = 10, nrows = 10, nlyrs = 3)
+#'   set.seed(1)
+#'   n_cells <- 100L
+#'   sand_v  <- runif(n_cells, 5, 65)
+#'   clay_v  <- runif(n_cells, 5, 30)   # sand + clay always < 100
+#'   silt_v  <- 100 - sand_v - clay_v
+#'   r <- terra::rast(ncols = 10, nrows = 10, nlyrs = 3,
+#'                    xmin = 0, xmax = 1, ymin = 0, ymax = 1)
 #'   names(r) <- c("sand", "silt", "clay")
-#'   terra::values(r) <- c(
-#'     runif(100, 10, 80),   # sand
-#'     runif(100, 5,  50),   # silt
-#'     runif(100, 5,  40)    # clay — will have invalid sums; demo only
-#'   )
+#'   terra::values(r) <- cbind(sand_v, silt_v, clay_v)
 #'   classify_texture(r, sand = "sand", silt = "silt", clay = "clay")
 #' }
 classify_texture.SpatRaster <- function(data,
