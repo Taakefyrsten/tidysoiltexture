@@ -1,5 +1,5 @@
 test_that("returns a ggplot object", {
-  soils <- tibble::tibble(
+  soils <- data.frame(
     sand = c(40, 70, 10),
     silt = c(40, 20, 20),
     clay = c(20, 10, 70)
@@ -9,7 +9,7 @@ test_that("returns a ggplot object", {
 })
 
 test_that("colour = NULL produces no colour aesthetic on points", {
-  soils <- tibble::tibble(sand = 40, silt = 40, clay = 20)
+  soils <- data.frame(sand = 40, silt = 40, clay = 20)
   p     <- gg_texture_triangle(soils, sand = sand, silt = silt, clay = clay)
   # The colour aesthetic should NOT appear in the point layer's mapping
   point_layer <- Filter(\(l) inherits(l$geom, "GeomPoint"), p$layers)
@@ -18,7 +18,7 @@ test_that("colour = NULL produces no colour aesthetic on points", {
 })
 
 test_that("colour column name is mapped to the point colour aesthetic", {
-  soils <- tibble::tibble(
+  soils <- data.frame(
     sand     = c(40, 70),
     silt     = c(40, 20),
     clay     = c(20, 10),
@@ -32,7 +32,7 @@ test_that("colour column name is mapped to the point colour aesthetic", {
 })
 
 test_that("invalid system argument raises an error", {
-  soils <- tibble::tibble(sand = 40, silt = 40, clay = 20)
+  soils <- data.frame(sand = 40, silt = 40, clay = 20)
   expect_error(
     gg_texture_triangle(soils, sand = sand, silt = silt, clay = clay, system = "UNKNOWN"),
     regexp = "should be"
@@ -40,7 +40,7 @@ test_that("invalid system argument raises an error", {
 })
 
 test_that("rows with sand + silt + clay != 100 raise an informative error", {
-  bad <- tibble::tibble(sand = 50, silt = 30, clay = 5)
+  bad <- data.frame(sand = 50, silt = 30, clay = 5)
   expect_error(
     gg_texture_triangle(bad, sand = sand, silt = silt, clay = clay),
     regexp = "sum to 100"

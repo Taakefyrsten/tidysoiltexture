@@ -198,7 +198,7 @@ library(sf)
 # 30 synthetic pedon locations across the study area
 set.seed(3312)
 pedons <- sf::st_as_sf(
-  tibble::tibble(
+  data.frame(
     pedon_id = sprintf("P%02d", 1:30),
     x        = runif(30, 500,  19500),
     y        = runif(30, 500,  19500),
